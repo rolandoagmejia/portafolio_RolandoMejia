@@ -1,13 +1,16 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import gsap from 'gsap'
+import { scrollState } from './Experience'
 import '../styles/Hero.css'
 
 /*
-  Hero — Sección de entrada con nombre holográfico,
-  brackets HUD y animaciones GSAP escalonadas.
+  Hero — Overlay HTML fijo con nombre holográfico.
+  Desaparece cuando la cámara empieza a moverse.
 */
 export default function Hero() {
   const sectionRef = useRef()
+  const [visible, setVisible] = useState(true)
+  const rafRef = useRef()
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -23,8 +26,33 @@ export default function Hero() {
     return () => ctx.revert()
   }, [])
 
+  /* Fade out basado en la velocidad / posición de la cámara */
+  useEffect(() => {
+    const update = () => {
+      if (!sectionRef.current) return
+      const speed = Math.abs(scrollState.velocity)
+      const offset = scrollState.offset
+
+      // Fade out cuando hay velocidad o la cámara se aleja
+      const fade = Math.max(0, 1 - offset * 15 - speed * 3)
+      sectionRef.current.style.opacity = fade
+
+      if (fade <= 0 && visible) {
+        setVisible(false)
+        sectionRef.current.style.pointerEvents = 'none'
+      } else if (fade > 0 && !visible) {
+        setVisible(true)
+        sectionRef.current.style.pointerEvents = 'none'
+      }
+
+      rafRef.current = requestAnimationFrame(update)
+    }
+    rafRef.current = requestAnimationFrame(update)
+    return () => cancelAnimationFrame(rafRef.current)
+  }, [visible])
+
   return (
-    <section className="hero-section section" id="hero" ref={sectionRef}>
+    <div className="hero-section" id="hero" ref={sectionRef}>
       <div className="hero-overlay">
         {/* Brackets decorativos tipo HUD */}
         <div className="hero-brackets">
@@ -42,9 +70,9 @@ export default function Hero() {
       </div>
 
       <div className="hero-scroll-cta">
-        <span>Explorar</span>
+        <span>Scroll para explorar</span>
         <div className="scroll-line" />
       </div>
-    </section>
+    </div>
   )
 }

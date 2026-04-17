@@ -245,8 +245,8 @@ function Planet3D({ name, pos, color, size, type }) {
   useFrame(({ camera }) => {
     if (!groupRef.current) return
     const dist = camera.position.distanceTo(groupRef.current.position)
-    // Visible a 150 unidades, invisible más lejos (nada desde el hero)
-    const farFade = dist < 40 ? 1 : dist < 150 ? (150 - dist) / 110 : 0
+    // Visible a 250 unidades, fade gradual
+    const farFade = dist < 40 ? 1 : dist < 250 ? (250 - dist) / 210 : 0
     const nearBoost = dist < 25 ? (1 - dist / 25) * 0.4 : 0
     const fade = Math.min(1, farFade + nearBoost)
     const t = Date.now() * 0.001
@@ -519,7 +519,6 @@ function SpaceWorld() {
       {/* Ambient light for rocky/standard materials */}
       <ambientLight intensity={0.15} />
 
-      <HeroText3D />
       {PLANETS.map((p, i) => (
         <Planet3D key={i} name={p.name} pos={p.pos} color={p.color} size={p.size} type={p.type} />
       ))}

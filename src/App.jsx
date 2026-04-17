@@ -1,6 +1,7 @@
 import { Suspense, useState, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
 import Experience from './components/Experience'
+import Hero from './components/Hero'
 import CockpitHUD from './components/CockpitHUD'
 import AmbientMusic from './components/AmbientMusic'
 import ShooterGame from './components/ShooterGame'
@@ -39,7 +40,7 @@ export default function App() {
         gl={{ antialias: false, alpha: false, powerPreference: 'high-performance' }}
       >
         <color attach="background" args={['#000005']} />
-        <fog attach="fog" args={['#000005', 150, 500]} />
+        <fog attach="fog" args={['#000005', 300, 700]} />
 
         <Suspense fallback={null}>
           <Experience />
@@ -47,6 +48,7 @@ export default function App() {
       </Canvas>
 
       {/* <CockpitHUD /> */}
+      <Hero />
       <PlanetInfoOverlay />
       <ChatOverlay />
       {/* <div className="flight-crosshair">+</div> */}
